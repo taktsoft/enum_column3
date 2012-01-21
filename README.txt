@@ -6,9 +6,7 @@ Overview
   Works with Scaffolding.
 
   Supported adapters:
-    mysql
     mysql2
-    jdbcmysql (by Nilesh Trivedi)
 
 How to use it.
 
