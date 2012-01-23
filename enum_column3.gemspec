@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = "enum_column3"
-  s.version     = "0.1.4"
+  s.version     = "0.1.3"
   s.authors     = ["Nick Pohodnya", "Michael Nowak"]
   s.email       = ["", "nowak@taktsoft.com"]
   s.homepage    = "http://github.com/taktsoft/enum_column"

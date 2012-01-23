@@ -6,5 +6,5 @@ require 'enum_column3/rails_generator'
 require 'enum_column3/railtie'
 
 module EnumColumn3
-  VERSION = '0.1.4'
+  VERSION = '0.1.3'
 end
