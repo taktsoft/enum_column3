@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 module EnumColumn3
   module ActionViewHelpers
     def self.included(base)

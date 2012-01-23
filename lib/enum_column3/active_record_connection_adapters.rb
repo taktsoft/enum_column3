@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 module EnumColumn3
   module ActiveRecordConnectionAdapters
     def self.included(base)

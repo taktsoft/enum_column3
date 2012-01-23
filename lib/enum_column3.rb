@@ -1,10 +1,14 @@
+# -*- encoding: utf-8 -*-
+
+require 'rubygems'
+
 require 'rails'
+require 'rails/generators'
+require 'rails/generators/generated_attribute'
 
 require 'enum_column3/action_view_helpers'
 require 'enum_column3/active_record_connection_adapters'
-require 'enum_column3/rails_generator'
+require 'enum_column3/active_record_validations'
+require 'enum_column3/rails_generators'
 require 'enum_column3/railtie'
-
-module EnumColumn3
-  VERSION = '0.1.3'
-end
+require 'enum_column3/version'

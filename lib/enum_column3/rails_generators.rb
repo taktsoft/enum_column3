@@ -1,5 +1,7 @@
+# -*- encoding: utf-8 -*-
+
 module EnumColumn3
-  module RailsGenerator
+  module RailsGenerators
     def self.included(base)
       base::GeneratedAttribute.send :include, InstanceMethods
 
