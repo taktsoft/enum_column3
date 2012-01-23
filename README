@@ -11,7 +11,7 @@ How to use it.
 
 In you Gemfile:
 
-  gem 'enum_column3', :git => 'http://github.com/taktsoft/enum_column.git'
+  gem 'enum_column3', :git => 'http://github.com/taktsoft/enum_column3.git'
 
 In your schema:
 
