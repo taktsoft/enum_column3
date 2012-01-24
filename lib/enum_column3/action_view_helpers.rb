@@ -6,10 +6,6 @@ module EnumColumn3
       base::FormOptionsHelper.send :include, FormOptionsHelper
       base::FormBuilder.send :include, FormBuilder
       base::InstanceTag.send :include, InstanceTag
-
-      base::InstanceTag.class_eval do
-        alias_method_chain :to_tag, :enum_attribute
-      end
     end
 
     module FormOptionsHelper
@@ -29,14 +25,6 @@ module EnumColumn3
           end
         end
         to_select_tag(column.limit, options, html_options)
-      end
-
-      def to_tag_with_enum_attribute(options={})
-        if (column_type == :enum && self.object.class.respond_to?(method_name.to_sym))
-          to_enum_select_tag(options)
-        else
-          to_tag_without_enum_attribute(options)
-        end
       end
     end
 
