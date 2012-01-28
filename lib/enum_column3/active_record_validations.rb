@@ -3,10 +3,10 @@
 module EnumColumn3
   module ActiveRecordValidations
     def self.included(base)
-      base::ClassMethods.send :include, ClassMethodsEnum
+      base.send :extend, ClassMethodsExt
     end
   
-    module ClassMethodsEnum
+    module ClassMethodsExt
       def validates_columns(*column_names)
         begin
           cols = columns_hash

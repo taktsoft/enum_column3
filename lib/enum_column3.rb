@@ -6,6 +6,8 @@ require 'rails'
 require 'rails/generators'
 require 'rails/generators/generated_attribute'
 
+require 'active_record/connection_adapters/mysql2_adapter'
+
 require 'enum_column3/action_view_helpers'
 require 'enum_column3/active_record_connection_adapters'
 require 'enum_column3/active_record_validations'

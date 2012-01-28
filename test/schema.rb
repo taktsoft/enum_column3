@@ -1,4 +1,3 @@
-
 ActiveRecord::Schema.define do
   create_table :enumerations, :force => true do |t|
     t.column :severity, :enum, :limit => [:low, :medium, :high, :critical],

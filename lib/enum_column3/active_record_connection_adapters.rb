@@ -3,40 +3,46 @@
 module EnumColumn3
   module ActiveRecordConnectionAdapters
     def self.included(base)
-      base::Mysql2Adapter.send :include, Mysql2Adapter::InstanceMethods
-
-      base::Mysql2Adapter.class_eval do
-        alias_method_chain :native_database_types, :enum
+      if ActiveRecord::VERSION::MAJOR == 3
+        if ActiveRecord::VERSION::MINOR < 2
+          base::Mysql2Adapter.send :include, Mysql2AdapterExt::InstanceMethods
+    
+          base::Mysql2Adapter.class_eval do
+            alias_method_chain :native_database_types, :enum
+          end
+    
+          base::Mysql2Column.send :extend, Mysql2ColumnExt::ClassMethods
+          base::Mysql2Column.send :include, Mysql2ColumnExt::InstanceMethods
+    
+          base::Mysql2Column.class_eval do
+            alias_method_chain :klass, :enum
+            alias_method_chain :type_cast, :enum
+            alias_method_chain :type_cast_code, :enum
+    
+            alias_method_chain :simplified_type, :enum
+            alias_method_chain :extract_limit, :enum
+          end
+        elsif ActiveRecord::VERSION::MINOR > 2
+          # TODO
+        end
       end
 
-      base::Mysql2Column.send :extend, Mysql2Column::ClassMethods
-      base::Mysql2Column.send :include, Mysql2Column::InstanceMethods
-
-      base::Mysql2Column.class_eval do
-        alias_method_chain :klass, :enum
-        alias_method_chain :type_cast, :enum
-        alias_method_chain :type_cast_code, :enum
-
-        alias_method_chain :simplified_type, :enum
-        alias_method_chain :extract_limit, :enum
-      end
-
-      base::Quoting.send :include, Quoting::InstanceMethods
+      base::Quoting.send :include, QuotingExt::InstanceMethods
 
       base::Quoting.module_eval do
         alias_method_chain :quote, :enum
       end
 
-      base::TableDefinition.send :include, TableDefinition::InstanceMethods
+      base::TableDefinition.send :include, TableDefinitionExt::InstanceMethods
 
-      base::SchemaStatements.send :include, SchemaStatements::InstanceMethods
+      base::SchemaStatements.send :include, SchemaStatementsExt::InstanceMethods
 
       base::SchemaStatements.module_eval do
         alias_method_chain :type_to_sql, :enum
       end
     end
 
-    module Mysql2Column
+    module Mysql2ColumnExt
       module ClassMethods
         def value_to_symbol(value)
           case value
@@ -96,7 +102,7 @@ module EnumColumn3
       end
     end
 
-    module Mysql2Adapter
+    module Mysql2AdapterExt
       module InstanceMethods
         def native_database_types_with_enum
           types = native_database_types_without_enum
@@ -106,7 +112,7 @@ module EnumColumn3
       end
     end
 
-    module Quoting
+    module QuotingExt
       module InstanceMethods
         def quote_with_enum(value, column = nil)
           if !value.is_a? Symbol
@@ -118,7 +124,7 @@ module EnumColumn3
       end
     end
 
-    module TableDefinition
+    module TableDefinitionExt
       module InstanceMethods
         def enum(*args)
           options = args.extract_options!
@@ -128,7 +134,7 @@ module EnumColumn3
       end
     end
 
-    module SchemaStatements
+    module SchemaStatementsExt
       module InstanceMethods
         def type_to_sql_with_enum(type, limit = nil, precision = nil, scale = nil) #:nodoc:
           if type == :enum

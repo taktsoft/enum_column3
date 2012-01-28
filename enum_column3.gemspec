@@ -18,4 +18,6 @@ Gem::Specification.new do |s|
 
   # s.add_development_dependency "rspec"
   s.add_runtime_dependency "rails", "~> 3.0"
+  s.add_runtime_dependency "mysql2", "~> 0.3.0"
+  s.add_development_dependency "pry", "~> 0.9.0"
 end

@@ -1,7 +1,6 @@
-require File.dirname(__FILE__) + '/test_helper'
-require 'fixtures/enumeration'
+require 'test_helper'
 
-class EnumerationsTest < Test::Unit::TestCase
+class ModelsTest < Test::Unit::TestCase
   def setup
     Enumeration.connection.execute 'DELETE FROM enumerations'
   end
@@ -64,23 +63,6 @@ class EnumerationsTest < Test::Unit::TestCase
     row.int_field = '500'
     assert row.save
   end
-
-  def test_view_helper
-    request  = ActionController::TestRequest.new
-    response = ActionController::TestResponse.new
-    request.action = 'test1'
-    body = EnumController.process(request, response).body
-    assert_equal '<select id="test_severity" name="test[severity]"><option value="low">low</option><option value="medium" selected="selected">medium</option><option value="high">high</option><option value="critical">critical</option></select>', body
-  end
-
-  def test_radio_helper
-    request  = ActionController::TestRequest.new
-    response = ActionController::TestResponse.new
-    request.action = 'test2'
-    body = EnumController.process(request, response).body
-    assert_equal '<label>low: <input id="test_severity_low" name="test[severity]" type="radio" value="low" /></label><label>medium: <input checked="checked" id="test_severity_medium" name="test[severity]" type="radio" value="medium" /></label><label>high: <input id="test_severity_high" name="test[severity]" type="radio" value="high" /></label><label>critical: <input id="test_severity_critical" name="test[severity]" type="radio" value="critical" /></label>', body
-  end
-
 
   # Basic tests
   def test_create_basic_default
