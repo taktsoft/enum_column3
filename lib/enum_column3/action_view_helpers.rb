@@ -3,23 +3,23 @@
 module EnumColumn3
   module ActionViewHelpers
     def self.included(base)
-      base::FormHelper.send :include, FormHelperExt
+      base::FormBuilder.send :include, FormBuilderExt
       base::FormTagHelper.send :include, FormTagHelperExt
       base::InstanceTag.send :include, InstanceTagExt
 
-      # work-around
+      # fix, becuase "base::FormTagHelper.send :include, FormTagHelperExt" doesn't work for me
       ActionView::Base.send :include, FormTagHelperExt
     end
 
-    module FormHelperExt
-      def enum_select(object, method, options={}, html_options={})
-        ::ActionView::Helpers::InstanceTag.new(object, method, self, options.delete(:object)).to_enum_select_tag(options, html_options)
+    module FormBuilderExt
+      def enum_select(method, options = {}, html_options={})
+        @template.enum_select(@object_name, method, objectify_options(options), html_options)
       end
     end
 
     module FormTagHelperExt
       def enum_select_tag(object_name, method, options={}, html_options={})
-        ::ActionView::Helpers::InstanceTag.new(object_name, method, self, nil).to_enum_select_tag(options, html_options)
+        ::ActionView::Helpers::InstanceTag.new(object_name, method, self, options.delete(:object)).to_enum_select_tag(options, html_options)
       end
       alias :enum_select :enum_select_tag
     end
@@ -33,8 +33,8 @@ module EnumColumn3
           else
             options[:include_blank] = column.null if options[:include_blank].nil?
           end
+          to_select_tag(column.limit, options, html_options)
         end
-        to_select_tag(column.limit, options, html_options)
       end
     end
   end

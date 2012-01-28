@@ -4,7 +4,25 @@ module EnumColumn3
   module ActiveRecordConnectionAdapters
     def self.included(base)
       if ActiveRecord::VERSION::MAJOR == 3
-        if ActiveRecord::VERSION::MINOR < 2
+        if ActiveRecord::VERSION::MINOR == 0
+          base::MysqlAdapter.send :include, MysqlAdapterExt::InstanceMethods
+    
+          base::MysqlAdapter.class_eval do
+            alias_method_chain :native_database_types, :enum
+          end
+    
+          base::MysqlColumn.send :extend, MysqlColumnExt::ClassMethods
+          base::MysqlColumn.send :include, MysqlColumnExt::InstanceMethods
+    
+          base::MysqlColumn.class_eval do
+            alias_method_chain :klass, :enum
+            alias_method_chain :type_cast, :enum
+            alias_method_chain :type_cast_code, :enum
+    
+            alias_method_chain :simplified_type, :enum
+            alias_method_chain :extract_limit, :enum
+          end
+        elsif ActiveRecord::VERSION::MINOR == 1
           base::Mysql2Adapter.send :include, Mysql2AdapterExt::InstanceMethods
     
           base::Mysql2Adapter.class_eval do
@@ -101,6 +119,7 @@ module EnumColumn3
         end
       end
     end
+    MysqlColumnExt = Mysql2ColumnExt
 
     module Mysql2AdapterExt
       module InstanceMethods
@@ -111,6 +130,7 @@ module EnumColumn3
         end
       end
     end
+    MysqlAdapterExt = Mysql2AdapterExt
 
     module QuotingExt
       module InstanceMethods

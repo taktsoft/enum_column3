@@ -2,7 +2,7 @@ Overview
 
   This gem is an extension to ActiveRecord which enables native support of enumerations in the database schema using the ENUM type in MySQL.
   Currently only MySQL is implemented.
-  Tested with Rails 3. Works with Scaffolding.
+  Tested with Rails 3.0.11 and 3.1.3. Works with Scaffolding. Rails 3.2 doesn't work yet.
 
   Supported adapters:
     mysql2

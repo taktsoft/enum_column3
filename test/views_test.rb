@@ -10,14 +10,16 @@ class ViewsTest < Test::Unit::TestCase
 
   def test_helper
     body = view.render :inline => "<%= @test.color %>"
-    assert_equal 'blue', body
+    assert_equal 'blue', body.strip
   end
 
   def test_view_helper
-    body = view.render :inline => "<%= enum_select('test', 'severity') %>" 
-    assert_equal '<select id="test_severity" name="test[severity]"><option value="low">low</option>
-<option value="medium" selected="selected">medium</option>
-<option value="high">high</option>
-<option value="critical">critical</option></select>', body
+    body = view.render :inline => ViewEnum::FORM_TAG_HELPER_VIEW
+    assert !body.empty?
+  end
+
+  def test_form_helper
+    body = view.render :inline => ViewEnum::FORM_HELPER_VIEW
+    assert !body.empty?
   end
 end
