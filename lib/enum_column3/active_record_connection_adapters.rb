@@ -40,8 +40,23 @@ module EnumColumn3
             alias_method_chain :simplified_type, :enum
             alias_method_chain :extract_limit, :enum
           end
-        elsif ActiveRecord::VERSION::MINOR > 2
+        elsif ActiveRecord::VERSION::MINOR >= 2
           # TODO
+          base::Mysql2Adapter.send :include, Mysql2AdapterExt::InstanceMethods
+          base::Mysql2Adapter.class_eval do
+            alias_method_chain :native_database_types, :enum
+          end
+
+          base::Mysql2Adapter::Column.send :extend, Mysql2ColumnExt::ClassMethods
+          base::Mysql2Adapter::Column.send :include, Mysql2ColumnExt::InstanceMethods
+          base::Mysql2Adapter::Column.class_eval do
+            alias_method_chain :klass, :enum
+            alias_method_chain :type_cast, :enum
+            alias_method_chain :type_cast_code, :enum
+
+            alias_method_chain :simplified_type, :enum
+            alias_method_chain :extract_limit, :enum
+          end
         end
       end
 
