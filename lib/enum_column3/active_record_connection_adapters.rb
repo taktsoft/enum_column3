@@ -40,8 +40,23 @@ module EnumColumn3
             alias_method_chain :simplified_type, :enum
             alias_method_chain :extract_limit, :enum
           end
-        elsif ActiveRecord::VERSION::MINOR > 2
+        elsif ActiveRecord::VERSION::MINOR >= 2
           # TODO
+          base::Mysql2Adapter.send :include, Mysql2AdapterExt::InstanceMethods
+          base::Mysql2Adapter.class_eval do
+            alias_method_chain :native_database_types, :enum
+          end
+
+          base::Mysql2Adapter::Column.send :extend, Mysql2ColumnExt::ClassMethods
+          base::Mysql2Adapter::Column.send :include, Mysql2ColumnExt::InstanceMethods
+          base::Mysql2Adapter::Column.class_eval do
+            alias_method_chain :klass, :enum
+            alias_method_chain :type_cast, :enum
+            alias_method_chain :type_cast_code, :enum
+
+            alias_method_chain :simplified_type, :enum
+            alias_method_chain :extract_limit, :enum
+          end
         end
       end
 
@@ -62,12 +77,13 @@ module EnumColumn3
 
     module Mysql2ColumnExt
       module ClassMethods
-        def value_to_symbol(value)
+        def value_to_symbol(value, enum_map)
           case value
           when Symbol
             value
           when String
-            value.empty? ? nil : value.intern
+            # +value+ may be user input - don't intern it.
+            value.empty? ? nil : enum_map[value]
           else
             nil
           end
@@ -85,7 +101,7 @@ module EnumColumn3
   
         def type_cast_with_enum(value)
           if type == :enum
-            self.class.value_to_symbol(value)
+            self.class.value_to_symbol(value, enum_map)
           else
             type_cast_without_enum(value)
           end
@@ -93,13 +109,19 @@ module EnumColumn3
   
         def type_cast_code_with_enum(var_name)
           if type == :enum
-            "#{self.class.name}.value_to_symbol(#{var_name})"
+            "#{self.class.name}.value_to_symbol(#{var_name}, #{enum_map.inspect})"
           else
             type_cast_code_without_enum(var_name)
           end
         end
-  
-  
+
+        def enum_map
+          @enum_map ||= limit.inject({}) do |map, sym|
+            map[sym.to_s] = sym
+            map
+          end
+        end
+
         private
   
         def simplified_type_with_enum(field_type)
